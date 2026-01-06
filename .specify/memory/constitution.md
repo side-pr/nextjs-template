@@ -1,50 +1,66 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# SSalonPick Admin Frontend Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. 단위 테스트 필수
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+**모든 비즈니스 로직은 테스트로 검증되어야 한다.**
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+테스트 없는 코드는 머지할 수 없다. 테스트는 코드의 동작을 문서화하고, 리팩토링 시 안전망이 된다.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. 타입 안전성
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+**모든 오류는 컴파일 타임에 잡아야 한다.**
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+런타임 오류를 방지하고, 코드 자체가 문서가 되도록 한다. API 타입은 openapi-typescript로 자동 생성하여 프론트-백엔드 계약을 보장한다.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### III. FSD 패턴 준수
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+**Feature-Sliced Design 구조를 따른다.**
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+각 레이어의 책임을 명확히 분리하고, 의존성 방향을 지킨다. entities는 단일 원천(SSOT)으로서 재사용되고, features는 유저 인터랙션과 비즈니스 로직을 담는다.
+
+### IV. 코드 가독성
+
+**처음 본 사람이 pages와 features만 봐도 비즈니스 로직을 파악할 수 있어야 한다.**
+
+코드는 작성하는 시간보다 읽는 시간이 더 길다. 명확한 네이밍과 구조로 자체 문서화된 코드를 작성한다.
+
+---
+
+## Technical Stack
+
+| Category     | Technology                  |
+| ------------ | --------------------------- |
+| Form         | React Hook Form + Zod       |
+| API Types    | openapi-typescript          |
+| UI           | Radix UI                    |
+| Architecture | FSD (Feature-Sliced Design) |
+
+---
+
+## FSD Structure
+
+```
+shared/ui        → Radix 기반 디자인 시스템 (Presentation)
+
+entities/model   → Zod 스키마, Type (단일 원천, SSOT)
+entities/api     → GET 요청 (조회)
+entities/config  → 상수
+
+features/api     → POST, PUT, DELETE (유저 인터랙션)
+features/model   → 비즈니스 로직
+features/ui      → 도메인 로직 포함 컴포넌트
+
+pages/           → Route 상수, 페이지 컴포넌트
+```
+
+---
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- **MAJOR**: 원칙 삭제 또는 근본적 변경
+- **MINOR**: 원칙 추가 또는 확장
+- **PATCH**: 명확화, 오타 수정
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Created**: 2025-01-05
